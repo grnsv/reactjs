@@ -1,9 +1,10 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
-import App from './App';
+import { BrowserRouter } from 'react-router-dom';
+import App from './components/App';
 
-test('renders header', () => {
-  render(<App />);
-  const headerElement = screen.getByText(/write message here:/i);
+test('renders menu', () => {
+  render(<App />, { wrapper: BrowserRouter });
+  const headerElement = screen.getByText(/chats/i);
   expect(headerElement).toBeInTheDocument();
 });
