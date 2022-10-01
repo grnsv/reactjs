@@ -5,6 +5,6 @@ import App from './components/App';
 
 test('renders menu', () => {
   render(<App />, { wrapper: BrowserRouter });
-  const headerElement = screen.getByText(/chats/i);
+  const headerElement = screen.getByText(/home/i);
   expect(headerElement).toBeInTheDocument();
 });
