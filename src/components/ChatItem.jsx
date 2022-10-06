@@ -8,7 +8,7 @@ import FolderIcon from '@mui/icons-material/Folder';
 
 function ChatItem({ name, id, handleDelete }) {
   return (
-    <ListItem disablePadding fullWidth sx={{ display: 'flex', justifyContent: 'space-between' }}>
+    <ListItem disablePadding sx={{ display: 'flex', justifyContent: 'space-between' }}>
       <Link to={`/chat/${id}`}>
         <ListItemButton>
           <ListItemAvatar><Avatar><FolderIcon /></Avatar></ListItemAvatar>
@@ -19,7 +19,7 @@ function ChatItem({ name, id, handleDelete }) {
         sx={{ margin: '10px 0 10px 0' }}
         variant="outlined"
         size="large"
-        onClick={() => handleDelete(id)}
+        onClick={handleDelete}
       >
         X
       </Button>
@@ -29,7 +29,7 @@ function ChatItem({ name, id, handleDelete }) {
 
 ChatItem.propTypes = {
   name: PropTypes.string.isRequired,
-  id: PropTypes.string.isRequired,
+  id: PropTypes.number.isRequired,
   handleDelete: PropTypes.func.isRequired,
 };
 

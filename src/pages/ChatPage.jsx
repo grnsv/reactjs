@@ -1,38 +1,37 @@
 import React, { useEffect, useRef, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import {
   Box, Button, Grid, TextField, Typography,
 } from '@mui/material';
+import { messagesSelector } from '../redux/reducers/messageReducer/messagesSelector';
 import Message from '../components/Message';
 
 function ChatPage() {
   const [author, setAuthor] = useState('');
   const [text, setText] = useState('');
-  const [messageList, setMessageList] = useState([
-    {
-      id: 1, author: 'Author1', text: 'Message1', chatId: 2,
-    },
-    {
-      id: 2, author: 'Author2', text: 'Message2', chatId: 1,
-    },
-    {
-      id: 3, author: 'Author3', text: 'Message3', chatId: 3,
-    },
-  ]);
+  const messages = useSelector(messagesSelector);
+  const dispatch = useDispatch();
   const { chatId } = useParams();
   const inputRef = useRef(null);
 
-  const handleClick = () => {
+  const handleAdd = () => {
     let id = 1;
-    if (messageList.length > 0) id = messageList[messageList.length - 1].id + 1;
+    if (messages.length > 0) id = messages[messages.length - 1].id + 1;
     if (author.length > 0) {
-      setMessageList([...messageList, {
-        id, author, text, chatId,
-      }]);
+      dispatch({
+        type: 'addMessage',
+        payload: {
+          id, author, text, chatId: Number(chatId),
+        },
+      });
     } else {
-      setMessageList([...messageList, {
-        id, author: 'Robot', text: 'Author name needed', chatId,
-      }]);
+      dispatch({
+        type: 'addMessage',
+        payload: {
+          id, author: 'Robot', text: 'Author name needed', chatId: Number(chatId),
+        },
+      });
     }
   };
 
@@ -44,20 +43,23 @@ function ChatPage() {
 
   useEffect(() => {
     if (
-      messageList.length > 0
-      && messageList[messageList.length - 1].author !== 'Robot'
+      messages.length > 0
+      && author
+      && messages[messages.length - 1].author !== 'Robot'
     ) {
-      setTimeout(() => {
-        setMessageList([...messageList, {
-          id: messageList[messageList.length - 1].id + 1,
+      setTimeout(() => dispatch({
+        type: 'addMessage',
+        payload: {
+          id: messages[messages.length - 1].id + 1,
           author: 'Robot',
           text: `${author}, your opinion is very important to us`,
-          chatId,
-        }]);
-      }, 1500);
+          chatId: Number(chatId),
+        },
+      }), 1500);
     }
     focusTextField(inputRef.current);
-  }, [messageList, author, chatId]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [messages]);
 
   return (
     <Grid container spacing={3} sx={{ margin: '10px 0 0' }}>
@@ -88,7 +90,7 @@ function ChatPage() {
             value={text}
             onChange={(e) => setText(e.target.value)}
           />
-          <Button sx={{ margin: '10px 0 10px 0' }} variant="outlined" size="large" fullWidth onClick={handleClick}>
+          <Button sx={{ margin: '10px 0 10px 0' }} variant="outlined" size="large" onClick={handleAdd}>
             SEND MESSAGE
           </Button>
         </Box>
@@ -100,12 +102,17 @@ function ChatPage() {
           }}
         >
           <Typography variant="h5" component="div" color="primary">Messages</Typography>
-          {messageList.length > 0
-            ? messageList.filter((message) => {
+          {messages.length > 0
+            ? messages.filter((message) => {
               if (!chatId) return true;
               return Number(message.chatId) === Number(chatId);
             }).map((message) => (
-              <Message author={message.author} text={message.text} key={message.id} />
+              <Message
+                key={message.id}
+                author={message.author}
+                text={message.text}
+                handleDelete={() => dispatch({ type: 'deleteMessage', payload: message.id })}
+              />
             ))
             : null}
         </Box>
