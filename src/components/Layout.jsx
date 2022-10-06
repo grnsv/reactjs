@@ -1,24 +1,27 @@
-import React from 'react';
+import React, { useMemo, useState } from 'react';
 import { Outlet } from 'react-router-dom';
-import CustomLink from './CustomLink';
+import Header from './Header';
+import { ThemeContext, themes } from '../context';
 
 function Layout() {
+  const [currentTheme, setCurrentTheme] = useState(themes.light);
+
+  const toggleTheme = () => {
+    setCurrentTheme((prevState) => (prevState === themes.light ? themes.dark : themes.light));
+  };
+
+  const theme = useMemo(() => ({ theme: currentTheme, toggleTheme }), [currentTheme]);
+
   return (
-    <>
-      <header>
-        <CustomLink to="/">Home</CustomLink>
-        <CustomLink to="/blog">Blog</CustomLink>
-        <CustomLink to="/chats/1">Chats</CustomLink>
-        <CustomLink to="/profile">Profile</CustomLink>
-        <CustomLink to="/about">About</CustomLink>
-      </header>
-      <main>
+    <ThemeContext.Provider value={theme}>
+      <Header />
+      <main style={{ background: currentTheme.background, color: currentTheme.textColor }}>
         <Outlet />
       </main>
-      <footer>
+      <footer style={{ background: currentTheme.background, color: currentTheme.textColor }}>
         Footer
       </footer>
-    </>
+    </ThemeContext.Provider>
   );
 }
 
