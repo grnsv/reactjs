@@ -19,7 +19,7 @@ function ChatItem({ name, id, handleDelete }) {
         sx={{ margin: '10px 0 10px 0' }}
         variant="outlined"
         size="large"
-        onClick={handleDelete}
+        onClick={() => handleDelete(id)}
       >
         X
       </Button>

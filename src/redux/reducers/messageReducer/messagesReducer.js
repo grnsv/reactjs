@@ -1,3 +1,5 @@
+import { actionTypes } from '../../actionTypes';
+
 /* eslint-disable import/prefer-default-export */
 const initialState = {
   messages: [
@@ -16,12 +18,12 @@ const initialState = {
 // eslint-disable-next-line default-param-last
 export const messagesReducer = (state = initialState, action) => {
   switch (action.type) {
-    case 'deleteMessage':
+    case actionTypes.DELETE_MESSAGE:
       return {
         ...state,
         messages: state.messages.filter((message) => message.id !== action.payload),
       };
-    case 'addMessage':
+    case actionTypes.ADD_MESSAGE:
       return {
         ...state,
         messages: [...state.messages, action.payload],

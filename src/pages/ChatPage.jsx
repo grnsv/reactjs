@@ -5,6 +5,7 @@ import {
   Box, Button, Grid, TextField, Typography,
 } from '@mui/material';
 import { messagesSelector } from '../redux/reducers/messageReducer/messagesSelector';
+import { actionTypes } from '../redux/actionTypes';
 import Message from '../components/Message';
 
 function ChatPage() {
@@ -15,25 +16,45 @@ function ChatPage() {
   const { chatId } = useParams();
   const inputRef = useRef(null);
 
-  const handleAdd = () => {
+  const botName = 'Robot';
+
+  const handleAdd = () => dispatch((disp) => {
     let id = 1;
     if (messages.length > 0) id = messages[messages.length - 1].id + 1;
     if (author.length > 0) {
-      dispatch({
-        type: 'addMessage',
+      disp({
+        type: actionTypes.ADD_MESSAGE,
         payload: {
           id, author, text, chatId: Number(chatId),
         },
       });
+      if (author !== botName) {
+        setTimeout(() => disp({
+          type: actionTypes.ADD_MESSAGE,
+          payload: {
+            id: id + 1,
+            author: botName,
+            text: `${author}, your opinion is very important to us`,
+            chatId: Number(chatId),
+          },
+        }), 1500);
+      }
     } else {
-      dispatch({
-        type: 'addMessage',
+      disp({
+        type: actionTypes.ADD_MESSAGE,
         payload: {
-          id, author: 'Robot', text: 'Author name needed', chatId: Number(chatId),
+          id, author: botName, text: 'Author name needed', chatId: Number(chatId),
         },
       });
     }
-  };
+  });
+
+  const handleDelete = (id) => dispatch((disp) => {
+    setTimeout(() => disp({
+      type: actionTypes.DELETE_MESSAGE,
+      payload: id,
+    }), 500);
+  });
 
   function focusTextField(input) {
     if (input) {
@@ -42,23 +63,7 @@ function ChatPage() {
   }
 
   useEffect(() => {
-    if (
-      messages.length > 0
-      && author
-      && messages[messages.length - 1].author !== 'Robot'
-    ) {
-      setTimeout(() => dispatch({
-        type: 'addMessage',
-        payload: {
-          id: messages[messages.length - 1].id + 1,
-          author: 'Robot',
-          text: `${author}, your opinion is very important to us`,
-          chatId: Number(chatId),
-        },
-      }), 1500);
-    }
     focusTextField(inputRef.current);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [messages]);
 
   return (
@@ -109,9 +114,10 @@ function ChatPage() {
             }).map((message) => (
               <Message
                 key={message.id}
+                id={message.id}
                 author={message.author}
                 text={message.text}
-                handleDelete={() => dispatch({ type: 'deleteMessage', payload: message.id })}
+                handleDelete={handleDelete}
               />
             ))
             : null}
