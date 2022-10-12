@@ -1,17 +1,22 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, {
+  useCallback, useEffect, useRef, useState,
+} from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import {
   Box, Button, Grid, TextField, Typography,
 } from '@mui/material';
-import { messagesSelector } from '../redux/reducers/messageReducer/messagesSelector';
-import { actionTypes } from '../redux/actionTypes';
+import { errorSelector, loadingSelector, messagesSelector } from '../redux/message/selectors';
+import { actionTypes } from '../redux/message/actionTypes';
+import { getMessages } from '../redux/message/actions';
 import Message from '../components/Message';
 
 function ChatPage() {
   const [author, setAuthor] = useState('');
   const [text, setText] = useState('');
   const messages = useSelector(messagesSelector);
+  const loading = useSelector(loadingSelector);
+  const error = useSelector(errorSelector);
   const dispatch = useDispatch();
   const { chatId } = useParams();
   const inputRef = useRef(null);
@@ -65,6 +70,32 @@ function ChatPage() {
   useEffect(() => {
     focusTextField(inputRef.current);
   }, [messages]);
+
+  const fetchMessages = useCallback(() => dispatch(getMessages()), [dispatch]);
+
+  useEffect(() => {
+    fetchMessages();
+  }, [fetchMessages]);
+
+  if (loading) {
+    return (
+      <div>
+        Loading...
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div>
+        <p>
+          Error:
+          {error}
+        </p>
+        <button type="button" onClick={fetchMessages}>Click to repeat</button>
+      </div>
+    );
+  }
 
   return (
     <Grid container spacing={3} sx={{ margin: '10px 0 0' }}>

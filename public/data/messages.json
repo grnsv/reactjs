@@ -1,0 +1,11 @@
+[
+  {
+    "id": 1, "author": "Author1", "text": "Message1", "chatId": 2
+  },
+  {
+    "id": 2, "author": "Author2", "text": "Message2", "chatId": 1
+  },
+  {
+    "id": 3, "author": "Author3", "text": "Message3", "chatId": 3
+  }
+]
