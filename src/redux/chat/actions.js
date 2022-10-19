@@ -1,14 +1,15 @@
-import { actionTypes } from './actionTypes';
+import * as types from './actionTypes';
+import { db } from '../../service/firebase';
 
 export const loadingChats = () => async (dispatch) => {
   dispatch({
-    type: actionTypes.GET_CHATS_LOADING,
+    type: types.GET_CHATS_LOADING,
   });
 };
 
 export const errorChats = (e) => async (dispatch) => {
   dispatch({
-    type: actionTypes.GET_CHATS_ERROR,
+    type: types.GET_CHATS_ERROR,
     payload: e.toString(),
   });
 };
@@ -16,11 +17,18 @@ export const errorChats = (e) => async (dispatch) => {
 export const getChats = () => async (dispatch) => {
   try {
     dispatch(loadingChats());
-    const response = await fetch('/data/chats.json');
-    const data = await response.json();
-    dispatch({
-      type: actionTypes.GET_CHATS,
-      payload: data,
+    db.child('chats').on('value', (snap) => {
+      if (snap.val() !== null) {
+        dispatch({
+          type: types.GET_CHATS,
+          payload: { ...snap.val() },
+        });
+      } else {
+        dispatch({
+          type: types.GET_CHATS,
+          payload: {},
+        });
+      }
     });
   } catch (e) {
     dispatch(errorChats(e));

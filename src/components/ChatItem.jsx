@@ -29,7 +29,10 @@ function ChatItem({ name, id, handleDelete }) {
 
 ChatItem.propTypes = {
   name: PropTypes.string.isRequired,
-  id: PropTypes.number.isRequired,
+  id: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.number,
+  ]).isRequired,
   handleDelete: PropTypes.func.isRequired,
 };
 
