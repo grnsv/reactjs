@@ -41,7 +41,9 @@ function Header() {
           ? (
             <>
               <CustomLink to="/profile">Profile</CustomLink>
-              <Button variant="outlined" onClick={handleOut}>Logout</Button>
+              <div>
+                <Button variant="outlined" onClick={handleOut}>Logout</Button>
+              </div>
             </>
           )
           : null}

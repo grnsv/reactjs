@@ -12,15 +12,9 @@ function ProfilePage() {
     'displayName',
     'email',
     'emailVerified',
-    'phoneNumber',
-    'photoURL',
     'isAnonymous',
-  ];
-  const metadata = [
     'createdAt',
-    'creationTime',
     'lastLoginAt',
-    'lastSignInTime',
   ];
 
   return (
@@ -34,26 +28,19 @@ function ProfilePage() {
         </TableHead>
         <TableBody>
           {rows.map((row) => (
-            <TableRow
-              key={row}
-              sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-            >
-              <TableCell component="th" scope="row">
-                {row}
-              </TableCell>
-              <TableCell align="right">{user[row]}</TableCell>
-            </TableRow>
-          ))}
-          {metadata.map((row) => (
-            <TableRow
-              key={`metadata.${row}`}
-              sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-            >
-              <TableCell component="th" scope="row">
-                {row}
-              </TableCell>
-              <TableCell align="right">{user.metadata[row]}</TableCell>
-            </TableRow>
+            Object.prototype.hasOwnProperty.call(user, row)
+              ? (
+                <TableRow
+                  key={row}
+                  sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                >
+                  <TableCell component="th" scope="row">
+                    {row}
+                  </TableCell>
+                  <TableCell align="right">{user[row]}</TableCell>
+                </TableRow>
+              )
+              : null
           ))}
         </TableBody>
       </Table>
