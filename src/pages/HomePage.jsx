@@ -6,8 +6,9 @@ import {
   Box, Button, List, TextField, Typography,
 } from '@mui/material';
 import { chatsSelector, errorSelector, loadingSelector } from '../redux/chat/selectors';
-import { actionTypes } from '../redux/chat/actionTypes';
+// import * as types from '../redux/chat/actionTypes';
 import { getChats } from '../redux/chat/actions';
+import { db } from '../service/firebase';
 import ChatItem from '../components/ChatItem';
 import { ThemeContext } from '../context';
 
@@ -21,20 +22,24 @@ function HomePage() {
   const [chatName, setChatName] = useState('');
 
   const handleAdd = () => {
-    dispatch({
-      type: actionTypes.ADD_CHAT,
-      payload: {
-        id: Date.now(),
-        name: chatName,
-      },
+    // dispatch({
+    //   type: types.ADD_CHAT,
+    //   payload: {
+    //     id: Date.now(),
+    //     name: chatName,
+    //   },
+    // });
+    db.child('chats').push({
+      name: chatName,
     });
   };
 
   const handleDelete = (id) => {
-    dispatch({
-      type: actionTypes.DELETE_CHAT,
-      payload: id,
-    });
+    // dispatch({
+    //   type: types.DELETE_CHAT,
+    //   payload: id,
+    // });
+    db.child('chats').child(id).remove();
   };
 
   const fetchChats = useCallback(() => dispatch(getChats()), [dispatch]);
@@ -77,8 +82,13 @@ function HomePage() {
         Add chat
       </Button>
       <List sx={{ margin: '10px 0 10px 0', width: '100%', bgcolor: 'background.paper' }}>
-        {chats.map((chat) => (
-          <ChatItem key={chat.id} name={chat.name} id={chat.id} handleDelete={handleDelete} />
+        {Object.keys(chats).map((key) => (
+          <ChatItem
+            key={key}
+            name={chats[key].name}
+            id={key}
+            handleDelete={handleDelete}
+          />
         ))}
       </List>
     </Box>

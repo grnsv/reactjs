@@ -1,8 +1,5 @@
-/* eslint-disable import/prefer-default-export */
-export const actionTypes = {
-  GET_CHATS: 'GET_CHATS',
-  GET_CHATS_LOADING: 'GET_CHATS_LOADING',
-  GET_CHATS_ERROR: 'GET_CHATS_ERROR',
-  ADD_CHAT: 'ADD_CHAT',
-  DELETE_CHAT: 'DELETE_CHAT',
-};
+export const GET_CHATS = 'GET_CHATS';
+export const GET_CHATS_LOADING = 'GET_CHATS_LOADING';
+export const GET_CHATS_ERROR = 'GET_CHATS_ERROR';
+export const ADD_CHAT = 'ADD_CHAT';
+export const DELETE_CHAT = 'DELETE_CHAT';

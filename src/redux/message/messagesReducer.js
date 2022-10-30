@@ -1,32 +1,32 @@
 /* eslint-disable import/prefer-default-export */
-import { actionTypes } from './actionTypes';
+import * as types from './actionTypes';
 
 const initialState = {
-  messages: [],
+  messages: {},
   loading: false,
   error: null,
 };
 
 const actionMap = new Map([
-  [actionTypes.GET_MESSAGES_LOADING, (state) => ({
+  [types.GET_MESSAGES_LOADING, (state) => ({
     ...state,
     loading: true,
   })],
-  [actionTypes.GET_MESSAGES, (state, action) => ({
+  [types.GET_MESSAGES, (state, action) => ({
     ...state,
     messages: action.payload,
     loading: false,
   })],
-  [actionTypes.GET_MESSAGES_ERROR, (state, action) => ({
+  [types.GET_MESSAGES_ERROR, (state, action) => ({
     ...state,
     loading: false,
     error: action.payload,
   })],
-  [actionTypes.DELETE_MESSAGE, (state, action) => ({
+  [types.DELETE_MESSAGE, (state, action) => ({
     ...state,
     messages: state.messages.filter((message) => message.id !== action.payload),
   })],
-  [actionTypes.ADD_MESSAGE, (state, action) => ({
+  [types.ADD_MESSAGE, (state, action) => ({
     ...state,
     messages: [...state.messages, action.payload],
   })],

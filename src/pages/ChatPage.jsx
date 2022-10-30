@@ -7,8 +7,9 @@ import {
   Box, Button, Grid, TextField, Typography,
 } from '@mui/material';
 import { errorSelector, loadingSelector, messagesSelector } from '../redux/message/selectors';
-import { actionTypes } from '../redux/message/actionTypes';
+// import * as types from '../redux/message/actionTypes';
 import { getMessages } from '../redux/message/actions';
+import { db } from '../service/firebase';
 import Message from '../components/Message';
 
 function ChatPage() {
@@ -23,43 +24,53 @@ function ChatPage() {
 
   const botName = 'Robot';
 
-  const handleAdd = () => dispatch((disp) => {
-    let id = 1;
-    if (messages.length > 0) id = messages[messages.length - 1].id + 1;
+  const handleAdd = () => /** dispatch((disp) => */ {
+    // let id = 1;
+    // if (messages.length > 0) id = messages[messages.length - 1].id + 1;
     if (author.length > 0) {
-      disp({
-        type: actionTypes.ADD_MESSAGE,
-        payload: {
-          id, author, text, chatId: Number(chatId),
-        },
+      // disp({
+      //   type: types.ADD_MESSAGE,
+      //   payload: {
+      //     id, author, text, chatId: Number(chatId),
+      //   },
+      // });
+      db.child('messages').child(chatId).push({
+        author, text,
       });
       if (author !== botName) {
-        setTimeout(() => disp({
-          type: actionTypes.ADD_MESSAGE,
-          payload: {
-            id: id + 1,
-            author: botName,
-            text: `${author}, your opinion is very important to us`,
-            chatId: Number(chatId),
-          },
+        // setTimeout(() => disp({
+        //   type: types.ADD_MESSAGE,
+        //   payload: {
+        //     id: id + 1,
+        //     author: botName,
+        //     text: `${author}, your opinion is very important to us`,
+        //     chatId: Number(chatId),
+        //   },
+        // }), 1500);
+        setTimeout(() => db.child('messages').child(chatId).push({
+          author: botName, text: `${author}, your opinion is very important to us`,
         }), 1500);
       }
     } else {
-      disp({
-        type: actionTypes.ADD_MESSAGE,
-        payload: {
-          id, author: botName, text: 'Author name needed', chatId: Number(chatId),
-        },
+      // disp({
+      //   type: types.ADD_MESSAGE,
+      //   payload: {
+      //     id, author: botName, text: 'Author name needed', chatId: Number(chatId),
+      //   },
+      // });
+      db.child('messages').child(chatId).push({
+        author: botName, text: 'Author name needed',
       });
     }
-  });
+  }/** ) */;
 
-  const handleDelete = (id) => dispatch((disp) => {
-    setTimeout(() => disp({
-      type: actionTypes.DELETE_MESSAGE,
-      payload: id,
-    }), 500);
-  });
+  const handleDelete = (id) => /** dispatch((disp) => */ {
+    // setTimeout(() => disp({
+    //   type: types.DELETE_MESSAGE,
+    //   payload: id,
+    // }), 500);
+    setTimeout(() => db.child('messages').child(chatId).child(id).remove(), 500);
+  }/** ) */;
 
   function focusTextField(input) {
     if (input) {
@@ -138,16 +149,13 @@ function ChatPage() {
           }}
         >
           <Typography variant="h5" component="div" color="primary">Messages</Typography>
-          {messages.length > 0
-            ? messages.filter((message) => {
-              if (!chatId) return true;
-              return Number(message.chatId) === Number(chatId);
-            }).map((message) => (
+          {messages[chatId]
+            ? Object.keys(messages[chatId]).map((key) => (
               <Message
-                key={message.id}
-                id={message.id}
-                author={message.author}
-                text={message.text}
+                key={key}
+                id={key}
+                author={messages[chatId][key].author}
+                text={messages[chatId][key].text}
                 handleDelete={handleDelete}
               />
             ))
