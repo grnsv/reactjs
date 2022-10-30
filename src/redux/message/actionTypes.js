@@ -1,0 +1,8 @@
+/* eslint-disable import/prefer-default-export */
+export const actionTypes = {
+  GET_MESSAGES: 'GET_MESSAGES',
+  GET_MESSAGES_LOADING: 'GET_MESSAGES_LOADING',
+  GET_MESSAGES_ERROR: 'GET_MESSAGES_ERROR',
+  ADD_MESSAGE: 'ADD_MESSAGE',
+  DELETE_MESSAGE: 'DELETE_MESSAGE',
+};
