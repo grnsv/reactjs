@@ -1,10 +1,23 @@
-import { combineReducers, createStore } from 'redux';
+import { applyMiddleware, combineReducers, createStore } from 'redux';
+import persistReducer from 'redux-persist/lib/persistReducer';
+import persistStore from 'redux-persist/lib/persistStore';
+import storage from 'redux-persist/lib/storage';
+import thunk from 'redux-thunk';
 import { chatsReducer } from './reducers/chatReducer/chatsReducer';
 import { messagesReducer } from './reducers/messageReducer/messagesReducer';
 
-export const reducer = combineReducers({
+const config = {
+  key: 'root',
+  storage,
+};
+
+const reducer = combineReducers({
   messages: messagesReducer,
   chats: chatsReducer,
 });
 
-export const store = createStore(reducer);
+const persistedReducer = persistReducer(config, reducer);
+
+export const store = createStore(persistedReducer, applyMiddleware(thunk));
+
+export const persist = persistStore(store);

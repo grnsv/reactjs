@@ -4,7 +4,9 @@ import {
   Button, Card, CardContent, Typography,
 } from '@mui/material';
 
-function Message({ author, text, handleDelete }) {
+function Message({
+  id, author, text, handleDelete,
+}) {
   return (
     <Card sx={{ minWidth: 275 }}>
       <CardContent>
@@ -15,7 +17,7 @@ function Message({ author, text, handleDelete }) {
           {`«${text}»`}
         </Typography>
       </CardContent>
-      <Button sx={{ margin: '10px 0 10px 0' }} variant="outlined" size="large" onClick={handleDelete}>
+      <Button sx={{ margin: '10px 0 10px 0' }} variant="outlined" size="large" onClick={() => handleDelete(id)}>
         DELETE
       </Button>
     </Card>
@@ -23,6 +25,7 @@ function Message({ author, text, handleDelete }) {
 }
 
 Message.propTypes = {
+  id: PropTypes.number.isRequired,
   author: PropTypes.string.isRequired,
   text: PropTypes.string.isRequired,
   handleDelete: PropTypes.func.isRequired,

@@ -4,6 +4,7 @@ import {
   Box, Button, List, TextField, Typography,
 } from '@mui/material';
 import { chatsSelector } from '../redux/reducers/chatReducer/chatsSelector';
+import { actionTypes } from '../redux/actionTypes';
 import ChatItem from '../components/ChatItem';
 import { ThemeContext } from '../context';
 
@@ -16,11 +17,18 @@ function HomePage() {
 
   const handleAdd = () => {
     dispatch({
-      type: 'addChat',
+      type: actionTypes.ADD_CHAT,
       payload: {
         id: Date.now(),
         name: chatName,
       },
+    });
+  };
+
+  const handleDelete = (id) => {
+    dispatch({
+      type: actionTypes.DELETE_CHAT,
+      payload: id,
     });
   };
 
@@ -39,7 +47,7 @@ function HomePage() {
       </Button>
       <List sx={{ margin: '10px 0 10px 0', width: '100%', bgcolor: 'background.paper' }}>
         {chats.map((chat) => (
-          <ChatItem key={chat.id} name={chat.name} id={chat.id} handleDelete={() => dispatch({ type: 'deleteChat', payload: chat.id })} />
+          <ChatItem key={chat.id} name={chat.name} id={chat.id} handleDelete={handleDelete} />
         ))}
       </List>
     </Box>
