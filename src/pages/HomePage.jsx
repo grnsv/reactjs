@@ -1,31 +1,27 @@
 import React, { useContext, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import {
   Box, Button, List, TextField, Typography,
 } from '@mui/material';
+import { chatsSelector } from '../redux/reducers/chatReducer/chatsSelector';
 import ChatItem from '../components/ChatItem';
 import { ThemeContext } from '../context';
 
 function HomePage() {
   const { theme } = useContext(ThemeContext);
 
-  const [chatList, setChatList] = useState([
-    { name: 'Some chat', id: '1' },
-    { name: 'Complicated discussion', id: '2' },
-    { name: 'Descriptions and documentation', id: '3' },
-  ]);
+  const chats = useSelector(chatsSelector);
+  const dispatch = useDispatch();
   const [chatName, setChatName] = useState('');
 
-  const handleDelete = (id) => {
-    const filtered = chatList.filter((chat) => chat.id !== id);
-    setChatList(filtered);
-  };
-
   const handleAdd = () => {
-    const obj = {
-      id: Date.now(),
-      name: chatName,
-    };
-    setChatList([...chatList, obj]);
+    dispatch({
+      type: 'addChat',
+      payload: {
+        id: Date.now(),
+        name: chatName,
+      },
+    });
   };
 
   return (
@@ -42,8 +38,8 @@ function HomePage() {
         Add chat
       </Button>
       <List sx={{ margin: '10px 0 10px 0', width: '100%', bgcolor: 'background.paper' }}>
-        {chatList.map((chat) => (
-          <ChatItem name={chat.name} key={chat.id} id={chat.id} handleDelete={handleDelete} />
+        {chats.map((chat) => (
+          <ChatItem key={chat.id} name={chat.name} id={chat.id} handleDelete={() => dispatch({ type: 'deleteChat', payload: chat.id })} />
         ))}
       </List>
     </Box>

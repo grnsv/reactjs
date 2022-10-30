@@ -1,8 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Card, CardContent, Typography } from '@mui/material';
+import {
+  Button, Card, CardContent, Typography,
+} from '@mui/material';
 
-function Message({ author, text }) {
+function Message({ author, text, handleDelete }) {
   return (
     <Card sx={{ minWidth: 275 }}>
       <CardContent>
@@ -13,6 +15,9 @@ function Message({ author, text }) {
           {`«${text}»`}
         </Typography>
       </CardContent>
+      <Button sx={{ margin: '10px 0 10px 0' }} variant="outlined" size="large" onClick={handleDelete}>
+        DELETE
+      </Button>
     </Card>
   );
 }
@@ -20,6 +25,7 @@ function Message({ author, text }) {
 Message.propTypes = {
   author: PropTypes.string.isRequired,
   text: PropTypes.string.isRequired,
+  handleDelete: PropTypes.func.isRequired,
 };
 
 export default Message;
